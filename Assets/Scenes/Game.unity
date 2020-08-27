@@ -320,7 +320,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &427840815
 RectTransform:
   m_ObjectHideFlags: 0
@@ -637,7 +637,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &515581373
 RectTransform:
   m_ObjectHideFlags: 0
@@ -786,6 +786,7 @@ GameObject:
   - component: {fileID: 707657155}
   - component: {fileID: 707657154}
   - component: {fileID: 707657156}
+  - component: {fileID: 707657157}
   m_Layer: 0
   m_Name: _GameManager
   m_TagString: Untagged
@@ -845,6 +846,24 @@ MonoBehaviour:
   rightPlayer: {fileID: 350703807}
   curPlayer: {fileID: 0}
   postGameTime: 0
+--- !u!114 &707657157
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 707657153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd629d625ed0fac4ab2c08f3b6cf2a2c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  endTurnButton: {fileID: 869016643}
+  leftPlayerText: {fileID: 1973469386}
+  rightPlayerText: {fileID: 457321495}
+  waitingUnitsText: {fileID: 515581374}
+  unitInfoText: {fileID: 427840816}
+  winText: {fileID: 1189183998}
 --- !u!1 &869016641
 GameObject:
   m_ObjectHideFlags: 0
@@ -926,7 +945,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 869016644}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 707657157}
+        m_MethodName: OnEndTurnButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &869016644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1198,7 +1228,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1189183997
 RectTransform:
   m_ObjectHideFlags: 0

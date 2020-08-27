@@ -53,6 +53,7 @@ public class GameManager : MonoBehaviourPun
             PlayerController.me.BeginTurn();
 
         // toggle the end turn button
+        GameUI.instance.ToggleEndTurnButton(curPlayer == PlayerController.me);
     }
 
     public PlayerController GetOtherPlayer(PlayerController player)

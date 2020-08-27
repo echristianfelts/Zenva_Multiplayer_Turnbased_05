@@ -20,46 +20,38 @@ public class PlayerController : MonoBehaviourPun
     [PunRPC]
     void Initialize(Player player)
     {
+        Debug.Log("PlayerController: Initialize");
         photonPlayer = player;
 
         // if this is our local player, spawn the units
         if (player.IsLocal)
         {
+            Debug.Log("PlayerController: Initialize.PlayerLocal");
+
             me = this;
             SpawnUnits();
         }
         else
         {
+            Debug.Log("PlayerController: Initialize.PlayernotLocal");
+
             enemy = this;
         }
 
         // set the UI player text
+        GameUI.instance.SetPlayerText(this);
     }
 
     void SpawnUnits()
     {
+        Debug.Log("PlayerController: SpawnUnits");
+
         for (int x = 0; x < unitsToSpawn.Length; ++x)
         {
             GameObject unit = PhotonNetwork.Instantiate(unitsToSpawn[x], spawnPoints[x].position, Quaternion.identity);
             unit.GetPhotonView().RPC("Initialize", RpcTarget.Others, false);
             unit.GetPhotonView().RPC("Initialize", photonPlayer, true);
         }
-    }
-
-    public void BeginTurn()
-    {
-        foreach (Unit unit in units)
-            unit.usedThisTurn = false;
-
-        // update the UI
-    }
-
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
     }
 
     // Update is called once per frame
@@ -70,6 +62,8 @@ public class PlayerController : MonoBehaviourPun
 
         if (Input.GetMouseButtonDown(0) && GameManager.instance.curPlayer == this)
         {
+            Debug.Log("PlayerController: Update.Click");
+
             Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             TrySelect(new Vector3(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y), 0));
         }
@@ -77,6 +71,8 @@ public class PlayerController : MonoBehaviourPun
 
     void TrySelect(Vector3 selectPos)
     {
+        Debug.Log("PlayerController: TrySelect");
+
         // are we selecting our unit?
         Unit unit = units.Find(x => x.transform.position == selectPos);
 
@@ -103,6 +99,8 @@ public class PlayerController : MonoBehaviourPun
 
     void SelectUnit(Unit unitToSelect)
     {
+        Debug.Log("PlayerController: Select Unit");
+
         // can we select the unit
         if (!unitToSelect.CanSelect())
             return;
@@ -116,6 +114,7 @@ public class PlayerController : MonoBehaviourPun
         selectedUnit.ToggleSelect(true);
 
         // set the unit info text
+        GameUI.instance.SetUnitInfoText(selectedUnit);
     }
 
     void DeSelectUnit()
@@ -124,6 +123,7 @@ public class PlayerController : MonoBehaviourPun
         selectedUnit = null;
 
         // disable the unit info text
+        GameUI.instance.unitInfoText.gameObject.SetActive(false);
     }
 
     void SelectNextAvailableUnit()
@@ -144,8 +144,10 @@ public class PlayerController : MonoBehaviourPun
             SelectNextAvailableUnit();
 
             // update the UI
+            GameUI.instance.UpdateWaitingUnitsText(units.FindAll(x => x.CanSelect()).Count);
         }
     }
+
 void TryMove(Vector3 movePos)
     {
         if (selectedUnit.CanMove(movePos))
@@ -154,6 +156,7 @@ void TryMove(Vector3 movePos)
             SelectNextAvailableUnit();
 
             // update the UI
+            GameUI.instance.UpdateWaitingUnitsText(units.FindAll(x => x.CanSelect()).Count);
         }
     }
 
@@ -165,5 +168,16 @@ void TryMove(Vector3 movePos)
 
         // start the next turn
         GameManager.instance.photonView.RPC("SetNextTurn", RpcTarget.All);
+    }
+
+    public void BeginTurn()
+    {
+        Debug.Log("PlayerController: BeginTurn");
+
+        foreach (Unit unit in units)
+            unit.usedThisTurn = false;
+
+        // update the UI
+        GameUI.instance.UpdateWaitingUnitsText(units.Count);
     }
 }
